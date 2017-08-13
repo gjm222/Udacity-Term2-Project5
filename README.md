@@ -14,7 +14,7 @@ MPC was used and described as follows:
 * Set up constraints mainly for the steering angle and throttle.
 * Set reference velocity.
 * Set timestep length (dt) and number of time steps (N).
-* Using the initial state and reference polynomial, determine steering angle and throttle values to send back to the simulator.
+* Using the initial state and reference polynomial, determine steering angle and throttle values using predictive calculations N steps into the future along with error in order find the best fit future polynomial.  From the best fit polynomial, send back the steering angle and throttle values send back to the simulator.
 
 
 ## Timestep Length and Elapsed Duration (N & dt)
