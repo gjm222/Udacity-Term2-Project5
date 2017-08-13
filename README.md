@@ -1,4 +1,4 @@
-# CarND-Controls-MPC Project 5
+# Term 2 Project 5 : CarND-Controls-MPC Project
 Self-Driving Car Engineer Nanodegree Program
 
 ---
