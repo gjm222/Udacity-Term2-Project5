@@ -18,5 +18,7 @@ MPC was used and described as follows:
 
 
 ## Timestep Length and Elapsed Duration (N & dt)
+A value of 10 for N and .1 seconds for dt was used for a total predition of 1 second into the future.  This seems like a reasonable number of steps to accurately predict and not use too many cpu cycles.
+
 ## Polynomial Fitting and MPC Preprocessing
 ## Model Predictive Control with Latency
