@@ -6,8 +6,8 @@ Self-Driving Car Engineer Nanodegree Program
 The objective is to get information from the simulator which includes waypoints and vehicle state and use it to determine steering angle and accelleration that is sent back to the simulator to control the vehicle.
 
 ## Model Predictive Control (MPC) Implementation
-MPC was used and described as follows:
-* Receive waypoints (x and y points) and state information (x position, y position, orientation, velocity, steering angle, and throttle) of the car from simulator
+A kinematic MPC was used and described as follows:
+* Receive waypoints (x and y points) and state information (x position, y position, orientation, velocity, steering angle, and throttle) of the car from simulator.
 * Shift and rotate waypoints to make calculations and derivations easier.
 ```
 for ( size_t i = 0; i< ptsx.size(); i++ )
@@ -28,18 +28,11 @@ Eigen::Map<Eigen::VectorXd> ptsy_trans(ptry,6);
 
 auto coeffs = polyfit(ptsx_trans, ptsy_trans, 3);
 ```
-* In order to account for latency, calculate initial/predictive values for the state of the vehicle 100ms in the future.
-```
-double init_x = v * latency_adj;  //Because we shifted and rotated the velicity is in x direction only
-double init_y = 0; //Because we shifed and rotated the y position will always be 0
-double init_psi = v * -steer_value / Lf * latency_adj;  
-double init_v = v + throttle_value * latency_adj;      
-double init_cte = cte +  (v * sin(epsi) * latency_adj);
-double init_epsi = epsi + v * -steer_value / Lf * latency_adj;
-```
+* In order to account for latency, calculate initial/predictive values for the state of the vehicle 100ms in the future.  See *Model Predictive Control with Latency* below.
 * Set up constraints mainly for the steering angle and throttle.
 * Set reference velocity.
-* Set timestep length (dt) and number of time steps (N).
+* Set timestep length (dt) and number of time steps (N).  See *Timestep Length and Elapsed Duration (N & dt)* below.
+* Tune cost to 
 * Using the initial state and reference polynomial, determine steering angle and throttle values using predictive calculations N steps into the future along with error in order find the best fit future polynomial.  From the best fit polynomial, send back the steering angle and throttle values send back to the simulator.
 
 
@@ -48,3 +41,11 @@ A value of 10 for N and .1 seconds for dt was used for a total predition of 1 se
 
 ## Polynomial Fitting and MPC Preprocessing
 ## Model Predictive Control with Latency
+```
+double init_x = v * latency_adj;  //Because we shifted and rotated the velicity is in x direction only
+double init_y = 0; //Because we shifed and rotated the y position will always be 0
+double init_psi = v * -steer_value / Lf * latency_adj;  
+double init_v = v + throttle_value * latency_adj;      
+double init_cte = cte +  (v * sin(epsi) * latency_adj);
+double init_epsi = epsi + v * -steer_value / Lf * latency_adj;
+```
