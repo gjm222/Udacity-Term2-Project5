@@ -25,7 +25,7 @@ const double Lf = 2.67;
 // The reference velocity is set to 40 mph.
 double ref_cte = 0;
 double ref_epsi = 0;
-double ref_v = 100;
+double ref_v = 200;
 
 size_t x_start = 0;
 size_t y_start = x_start + N;
@@ -59,7 +59,6 @@ class FG_eval {
       fg[0] += 2000*CppAD::pow(vars[cte_start + t], 2);  //Emphasize keeping car in middle of waypoint polynomial
       fg[0] += 2000*CppAD::pow(vars[epsi_start + t], 2); //Emphasize keeping car in middle of waypoint polynomial
       fg[0] += CppAD::pow(vars[v_start + t] - ref_v, 2); //Direct car to go at a reference velocity
-}
     }
 
     // Minimize the use of actuators to soften turning and throttle
