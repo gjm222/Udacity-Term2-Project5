@@ -32,7 +32,27 @@ auto coeffs = polyfit(ptsx_trans, ptsy_trans, 3);
 * Set up constraints mainly for the steering angle and throttle.
 * Set reference velocity.
 * Set timestep length (dt) and number of time steps (N).  See *Timestep Length and Elapsed Duration (N & dt)* below.
-* Tune cost to 
+* Tune cost.
+```
+// The part of the cost based on the reference state.
+for (size_t t = 0; t < N; t++) {
+  fg[0] += 2000*CppAD::pow(vars[cte_start + t], 2);  //Emphasize keeping car in middle of waypoint polynomial
+  fg[0] += 2000*CppAD::pow(vars[epsi_start + t], 2); //Emphasize keeping car in middle of waypoint polynomial
+  fg[0] += CppAD::pow(vars[v_start + t] - ref_v, 2); //Direct car to go at a reference velocity
+}
+
+// Minimize the use of actuators.
+for (size_t t = 0; t < N - 1; t++) {
+  fg[0] += 5*CppAD::pow(vars[delta_start + t], 2);  
+  fg[0] += 5*CppAD::pow(vars[a_start + t], 2);      
+}
+
+// Minimize the value gap between sequential actuations.
+for (size_t t = 0; t < N - 2; t++) {
+  fg[0] += 200*CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2); //Soften sharp turning 
+  fg[0] += 10*CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);          //Soften throttle
+}
+```
 * Using the initial state and reference polynomial, determine steering angle and throttle values using predictive calculations N steps into the future along with error in order find the best fit future polynomial.  From the best fit polynomial, send back the steering angle and throttle values send back to the simulator.
 
 
