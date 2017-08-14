@@ -53,13 +53,25 @@ for (size_t t = 0; t < N - 2; t++) {
   fg[0] += 10*CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);          //Soften throttle
 }
 ```
-* Using the initial state and reference polynomial, determine steering angle and throttle values using predictive calculations N steps into the future along with error in order find the best fit future polynomial.  From the best fit polynomial, send back the steering angle and throttle values send back to the simulator.
+* Using the initial state and reference polynomial, determine steering angle and throttle values using predictive calculations N steps into the future along with error and contraints in order find the best fit future polynomial.  The best fit polynomial is found using the Ipopt 3.12.1 library 'solve' method.  From the best fit polynomial, the first found steering angle and throttle values is sent back the simulator.  
+```
+MPC.c: Calling solve method...
+CppAD::ipopt::solve<Dvector, FG_eval>(
+      options, vars, vars_lowerbound, vars_upperbound, constraints_lowerbound,
+      constraints_upperbound, fg_eval, solution);
+```
+```
+main.c: Where sterring angle and throttle are sent back ...
+msgJson["steering_angle"] = vars[0]/(deg2rad(25)*Lf); //steer_value;
+msgJson["throttle"] = vars[1]; //throttle_value;
+```
 
 
 ## Timestep Length and Elapsed Duration (N & dt)
-A value of 10 for N and .1 seconds for dt was used for a total predition of 1 second into the future.  This seems like a reasonable number of steps to accurately predict and not use too many cpu cycles.
+A value of 10 for N and .1 seconds for dt was used for a total predition of 1 second into the future.  This seems like a reasonable number of steps to accurately predict and not use too many cpu cycles.  I got this value from the class.  When I kept N = 10 and switched  dt ~ .2, I was able to get the car to make it around the track without any latency handling but the car would decrease speed to ~ 20/mph.
 
 ## Polynomial Fitting and MPC Preprocessing
+
 ## Model Predictive Control with Latency
 ```
 double init_x = v * latency_adj;  //Because we shifted and rotated the velicity is in x direction only
