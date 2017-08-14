@@ -9,15 +9,16 @@ The objective is to get information from the simulator which includes waypoints 
 MPC was used and described as follows:
 * Receive waypoints (x and y points) and state information (x position, y position, orientation, velocity, steering angle, and throttle) of the car from simulator
 * Shift and rotate waypoints to make calculations and derivations easier.
-
-		  ```for ( size_t i = 0; i< ptsx.size(); i++ )
-		  {
-			  double shift_x = ptsx[i]-px;
-			  double shift_y = ptsy[i]-py;
-			  //Shift and rotate
-			  ptsx[i] = (shift_x * cos(0-psi) - shift_y * sin(0-psi));
-			  ptsy[i] = (shift_x * sin(0-psi) + shift_y * cos(0-psi));
-		  }```
+```
+for ( size_t i = 0; i< ptsx.size(); i++ )
+{
+   double shift_x = ptsx[i]-px;
+   double shift_y = ptsy[i]-py;
+   //Shift and rotate
+   ptsx[i] = (shift_x * cos(0-psi) - shift_y * sin(0-psi));
+   ptsy[i] = (shift_x * sin(0-psi) + shift_y * cos(0-psi));
+}
+```
 * Create polynomial line given the waypoints for use as the reference.
 * In order to account for latency, calculate initial/predictive values for the state of the vehicle 100ms in the future.
 * Set up constraints mainly for the steering angle and throttle.
