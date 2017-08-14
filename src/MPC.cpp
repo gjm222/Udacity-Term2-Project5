@@ -118,11 +118,11 @@ class FG_eval {
 
       // Only consider the actuation at time t.
       AD<double> delta0 = vars[delta_start + t];
-      AD<double> a0 = vars[a_start + t];
+      AD<double> a0 = vars[a_start + t]; 
 
-      //AD<double> f0 = coeffs[0] + coeffs[1] * x0;
+      //Calculate f0 for future cte
 	  AD<double> f0 = coeffs[0] + coeffs[1] * x0 + coeffs[2] * x0 * x0 + coeffs[3] * x0 * x0 * x0;
-      //AD<double> psides0 = CppAD::atan(coeffs[1]);
+	  //Calculate psides0 for future psi error
 	  AD<double> psides0 = CppAD::atan(3*coeffs[3]*x0*x0 + 2*coeffs[2]*x0 + coeffs[1]);
 	   
 	
