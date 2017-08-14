@@ -8,17 +8,7 @@ The objective is to get information from the simulator which includes waypoints 
 ## Model Predictive Control (MPC) Implementation
 A kinematic MPC was used and described as follows:
 * Receive waypoints (x and y points) and state information (x position, y position, orientation, velocity, steering angle, and throttle) of the car from simulator.
-* Shift and rotate waypoints to make calculations and derivations easier.
-```
-for ( size_t i = 0; i< ptsx.size(); i++ )
-{
-   double shift_x = ptsx[i]-px;
-   double shift_y = ptsy[i]-py;
-   //Shift and rotate
-   ptsx[i] = (shift_x * cos(0-psi) - shift_y * sin(0-psi));
-   ptsy[i] = (shift_x * sin(0-psi) + shift_y * cos(0-psi));
-}
-```
+* Shift and rotate waypoints to make calculations and derivations easier. See *Polynomial Fitting and MPC Preprocessing* below.
 * Create polynomial line given the waypoints for use as the reference.
 ```
 double* ptrx = &ptsx[0];
@@ -71,6 +61,16 @@ msgJson["throttle"] = vars[1]; //throttle_value;
 A value of 10 for N and .1 seconds for dt was used for a total predition of 1 second into the future.  This seems like a reasonable number of steps to accurately predict and not use too many cpu cycles.  I got this value from the class.  When I kept N = 10 and switched  dt ~ .2, I was able to get the car to make it around the track without any latency handling but the car would decrease speed to ~ 20/mph.
 
 ## Polynomial Fitting and MPC Preprocessing
+```
+for ( size_t i = 0; i< ptsx.size(); i++ )
+{
+   double shift_x = ptsx[i]-px;
+   double shift_y = ptsy[i]-py;
+   //Shift and rotate
+   ptsx[i] = (shift_x * cos(0-psi) - shift_y * sin(0-psi));
+   ptsy[i] = (shift_x * sin(0-psi) + shift_y * cos(0-psi));
+}
+```
 
 ## Model Predictive Control with Latency
 ```
