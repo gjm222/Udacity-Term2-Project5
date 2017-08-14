@@ -20,7 +20,23 @@ for ( size_t i = 0; i< ptsx.size(); i++ )
 }
 ```
 * Create polynomial line given the waypoints for use as the reference.
+```
+double* ptrx = &ptsx[0];
+Eigen::Map<Eigen::VectorXd> ptsx_trans(ptrx,6);
+double* ptry = &ptsy[0];
+Eigen::Map<Eigen::VectorXd> ptsy_trans(ptry,6);
+
+auto coeffs = polyfit(ptsx_trans, ptsy_trans, 3);
+```
 * In order to account for latency, calculate initial/predictive values for the state of the vehicle 100ms in the future.
+```
+double init_x = v * latency_adj;  //Because we shifted and rotated the velicity is in x direction only
+double init_y = 0; //Because we shifed and rotated the y position will always be 0
+double init_psi = v * -steer_value / Lf * latency_adj;  
+double init_v = v + throttle_value * latency_adj;      
+double init_cte = cte +  (v * sin(epsi) * latency_adj);
+double init_epsi = epsi + v * -steer_value / Lf * latency_adj;
+```
 * Set up constraints mainly for the steering angle and throttle.
 * Set reference velocity.
 * Set timestep length (dt) and number of time steps (N).
