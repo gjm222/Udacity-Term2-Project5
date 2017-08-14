@@ -56,21 +56,22 @@ class FG_eval {
 
     // The part of the cost based on the reference state.
     for (size_t t = 0; t < N; t++) {
-      fg[0] += 2000*CppAD::pow(vars[cte_start + t], 2);  //2000*
-      fg[0] += 2000*CppAD::pow(vars[epsi_start + t], 2); //2000*
-      fg[0] += CppAD::pow(vars[v_start + t] - ref_v, 2);
+      fg[0] += 2000*CppAD::pow(vars[cte_start + t], 2);  //Emphasize keeping car in middle of waypoint polynomial
+      fg[0] += 2000*CppAD::pow(vars[epsi_start + t], 2); //Emphasize keeping car in middle of waypoint polynomial
+      fg[0] += CppAD::pow(vars[v_start + t] - ref_v, 2); //Direct car to go at a reference velocity
+}
     }
 
-    // Minimize the use of actuators.
+    // Minimize the use of actuators to soften turning and throttle
     for (size_t t = 0; t < N - 1; t++) {
-      fg[0] += 5*CppAD::pow(vars[delta_start + t], 2);  //5*
-      fg[0] += 5*CppAD::pow(vars[a_start + t], 2);      //5*
+      fg[0] += 5*CppAD::pow(vars[delta_start + t], 2);  
+      fg[0] += 5*CppAD::pow(vars[a_start + t], 2);      
     }
 
     // Minimize the value gap between sequential actuations.
     for (size_t t = 0; t < N - 2; t++) {
-      fg[0] += 200*CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);  //200*
-      fg[0] += 10*CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);          //10*
+      fg[0] += 200*CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);  //Soften sharp turning
+      fg[0] += 10*CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);           //Soften throttle
     }
 
 	
