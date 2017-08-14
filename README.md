@@ -1,9 +1,10 @@
 # Term 2 Project 5 : CarND-Controls-MPC Project
 Self-Driving Car Engineer Nanodegree Program
-
 ---
+
 ## Objective
-The objective is to get information from the simulator which includes waypoints and vehicle state and use it to determine steering angle and accelleration that is sent back to the simulator to control the vehicle.
+The objective is to get information from the simulator which includes waypoints and vehicle state and use it to determine a new steering angle and throttle which is then sent back to the simulator to control the vehicle.
+
 
 ## Model Predictive Control (MPC) Implementation
 A kinematic MPC was used and described as follows:
@@ -36,7 +37,7 @@ for (size_t t = 0; t < N - 2; t++) {
   fg[0] += 10*CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);          //Soften throttle
 }
 ```
-* Using the initial state and reference polynomial, determine steering angle and throttle values using predictive calculations N steps into the future along with error and contraints in order find the best fit (Note: "best fit" meaning the best polynomial that can be found in .5 seconds) future polynomial.  The best fit polynomial is found using the Ipopt 3.12.1 library 'solve' method.  From the best fit polynomial, the first found steering angle and throttle values is sent back the simulator.  
+* Using the initial state and reference polynomial, determine steering angle and throttle values using predictive calculations N steps into the future along with error and contraints in order find the best fit (Note: "best fit" meaning the best polynomial that can be found in .5 seconds) future polynomial.  The best fit polynomial is found using the Ipopt 3.12.1 library 'solve' method which does all the partial derivitive calculations with in and set, in the case .5 seconds, amount of time.  From the best fit polynomial, the first found steering angle and throttle values are sent back the simulator to control the vehicle.  
 ```
 MPC.c: Calling solve method...
 CppAD::ipopt::solve<Dvector, FG_eval>(
@@ -44,7 +45,7 @@ CppAD::ipopt::solve<Dvector, FG_eval>(
       constraints_upperbound, fg_eval, solution);
 ```
 ```
-main.c: Where sterring angle and throttle are sent back ...
+main.c: Where steering angle and throttle are sent back ...
 msgJson["steering_angle"] = vars[0]/(deg2rad(25)*Lf); //steer_value;
 msgJson["throttle"] = vars[1]; //throttle_value;
 ```
@@ -52,6 +53,7 @@ msgJson["throttle"] = vars[1]; //throttle_value;
 
 ## Timestep Length and Elapsed Duration (N & dt)
 A value of 10 for N and .1 seconds for dt was used for a total predition of 1 second into the future.  This seems like a reasonable number of steps to accurately predict and not use too many cpu cycles.  I got this value from the class.  When I kept N = 10 and switched  dt ~ .2, I was able to get the car to make it around the track without any latency handling but the car would decrease speed to ~ 20/mph.
+
 
 ## Polynomial Fitting and MPC Preprocessing
 ```
