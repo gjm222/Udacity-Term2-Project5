@@ -7,7 +7,7 @@ The objective is to get information from the simulator which includes waypoints 
 
 
 ## Model Predictive Control (MPC) Implementation
-A kinematic MPC was used and described as follows:
+A kinematic MPC was used and described as follows:  
 Note: All code written for Linux using in C++.
 * Receive waypoints (x and y points) and state information (x position, y position, orientation, velocity, steering angle, and throttle) of the car from simulator.
 * Shift and rotate waypoints to make calculations and derivations easier. See *Polynomial Fitting and MPC Preprocessing* below.
